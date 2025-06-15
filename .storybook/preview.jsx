@@ -1,4 +1,5 @@
 import '../src/index.css';
+import { ThemeProvider } from '../src/context/ThemeContext';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -17,6 +18,15 @@ const preview = {
       timeout: 5000,
     },
   },
+  decorators: [
+    (Story) => (
+      <ThemeProvider>
+        <div style={{ padding: '2rem', backgroundColor: 'var(--background-color)' }}>
+          <Story />
+        </div>
+      </ThemeProvider>
+    ),
+  ],
 };
 
 export default preview; 

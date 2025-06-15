@@ -28,6 +28,13 @@ const config = {
           ],
         },
       },
+      resolve: {
+        ...config.resolve,
+        alias: {
+          ...config.resolve?.alias,
+          '@': '/src',
+        },
+      },
     };
   },
 };
