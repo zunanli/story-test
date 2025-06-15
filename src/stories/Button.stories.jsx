@@ -82,22 +82,48 @@ export const WithTheme = {
     const themeToggle = await canvas.getByText('🌙 Dark');
     const button = await canvas.getByTestId('button');
 
-    await step('切换主题', async () => {
+    // 获取初始主题下的按钮样式
+    const initialStyle = window.getComputedStyle(button);
+    const initialBackgroundColor = initialStyle.backgroundColor;
+
+    await step('切换到暗色主题', async () => {
       await userEvent.click(themeToggle);
     });
 
     await step('验证按钮在暗色主题下的样式', async () => {
-      const buttonStyle = window.getComputedStyle(button);
-      expect(buttonStyle.backgroundColor).toBeDefined();
+      const darkStyle = window.getComputedStyle(button);
+      expect(darkStyle.backgroundColor).not.toBe(initialBackgroundColor);
+      expect(themeToggle).toHaveTextContent('☀️ Light');
     });
 
-    await step('再次切换主题', async () => {
+    await step('切换回亮色主题', async () => {
       await userEvent.click(themeToggle);
     });
 
     await step('验证按钮在亮色主题下的样式', async () => {
-      const buttonStyle = window.getComputedStyle(button);
-      expect(buttonStyle.backgroundColor).toBeDefined();
+      const lightStyle = window.getComputedStyle(button);
+      expect(lightStyle.backgroundColor).toBe(initialBackgroundColor);
+      expect(themeToggle).toHaveTextContent('🌙 Dark');
+    });
+
+    // 测试不同变体在主题切换时的表现
+    await step('测试不同变体在主题切换时的表现', async () => {
+      const variants = ['primary', 'secondary', 'danger'];
+      
+      for (const variant of variants) {
+        // 切换到暗色主题
+        await userEvent.click(themeToggle);
+        const darkStyle = window.getComputedStyle(button);
+        const darkBackgroundColor = darkStyle.backgroundColor;
+
+        // 切换回亮色主题
+        await userEvent.click(themeToggle);
+        const lightStyle = window.getComputedStyle(button);
+        const lightBackgroundColor = lightStyle.backgroundColor;
+
+        // 验证不同主题下的颜色确实不同
+        expect(darkBackgroundColor).not.toBe(lightBackgroundColor);
+      }
     });
   },
 }; 
