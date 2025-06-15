@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 export const Button = ({ 
-  children, 
+  children,
+  label,
   onClick, 
   variant = 'primary', 
   size = 'medium', 
@@ -17,30 +18,37 @@ export const Button = ({
   };
 
   const variantClasses = {
-    primary: 'bg-blue-500 hover:bg-blue-600 text-white',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
-    danger: 'bg-red-500 hover:bg-red-600 text-white'
+    primary: 'bg-primary-500 hover:bg-primary-600 text-white shadow-sm hover:shadow-md',
+    secondary: 'bg-secondary-100 hover:bg-secondary-200 text-gray-800 border border-secondary-300 hover:border-secondary-400',
+    danger: 'bg-danger-500 hover:bg-danger-600 text-white shadow-sm hover:shadow-md'
   };
 
   const sizeClasses = {
-    small: 'px-3 py-1 text-sm',
-    medium: 'px-4 py-2 text-base',
-    large: 'px-6 py-3 text-lg'
+    small: 'px-3 py-1.5 text-sm rounded',
+    medium: 'px-4 py-2 text-base rounded-md',
+    large: 'px-6 py-3 text-lg rounded-lg'
   };
+
+  const buttonText = children || label || 'Button';
 
   return (
     <button 
       onClick={handleClick}
       disabled={disabled || clicked}
       className={`
-        rounded-md font-medium transition-colors
+        font-medium transition-all duration-200
         ${variantClasses[variant]}
         ${sizeClasses[size]}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+        ${!disabled && !clicked ? 'hover:scale-105 active:scale-95' : ''}
+        focus:outline-none focus:ring-2 focus:ring-offset-2
+        ${variant === 'primary' ? 'focus:ring-primary-500' : 
+          variant === 'secondary' ? 'focus:ring-secondary-400' : 
+          'focus:ring-danger-500'}
       `}
       data-testid="button"
     >
-      {clicked ? "Clicked!" : children}
+      {clicked ? "Clicked!" : buttonText}
     </button>
   );
 }; 

@@ -16,5 +16,19 @@ const config = {
   features: {
     interactionsDebugger: true,
   },
+  async viteFinal(config) {
+    return {
+      ...config,
+      css: {
+        ...config.css,
+        postcss: {
+          plugins: [
+            require('tailwindcss'),
+            require('autoprefixer'),
+          ],
+        },
+      },
+    };
+  },
 };
 export default config; 
