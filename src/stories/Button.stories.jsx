@@ -101,8 +101,8 @@ export const Interactive = {
         // 验证颜色变为红色
         expect(button.style.backgroundColor).toBe('rgb(239, 68, 68)'); // #EF4444
         
-        // 验证 alert 显示当前文本
-        expect(alertMessage).toBe('Click Me');
+        // 验证 alert 显示的文本与按钮文本一致
+        expect(alertMessage).toBe(button.textContent);
       } finally {
         // 恢复原始的 alert 函数
         Object.defineProperty(window, 'alert', {

@@ -14,6 +14,7 @@ export const Button = ({
   const [clicked, setClicked] = useState(false);
   const { theme } = useTheme();
   const [buttonText, setButtonText] = useState(label);
+  const [isRed, setIsRed] = useState(false);
 
   // 监听 label 变化，更新 buttonText
   useEffect(() => {
@@ -22,6 +23,9 @@ export const Button = ({
 
   const handleClick = (e) => {
     if (disabled) return;
+    
+    // 切换颜色
+    setIsRed(prev => !prev);
     
     // 更新点击状态
     setClicked(true);
@@ -39,10 +43,10 @@ export const Button = ({
   const getVariantStyles = () => {
     const baseStyles = {
       primary: {
-        backgroundColor: theme.colors.primary[500],
+        backgroundColor: isRed ? theme.colors.danger[500] : theme.colors.primary[500],
         color: theme.colors.text.primary,
         '&:hover': {
-          backgroundColor: theme.colors.primary[600],
+          backgroundColor: isRed ? theme.colors.danger[600] : theme.colors.primary[600],
         },
       },
       secondary: {
