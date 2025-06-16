@@ -7,7 +7,9 @@ export const Button = ({
   onClick, 
   variant = 'primary', 
   size = 'medium', 
-  disabled = false 
+  disabled = false,
+  showAlert = false,
+  alertMessage = 'Button clicked!'
 }) => {
   const [clicked, setClicked] = useState(false);
   const [isRed, setIsRed] = useState(false);
@@ -18,6 +20,9 @@ export const Button = ({
       setIsRed(prev => !prev);
       setClicked(true);
       onClick?.();
+      if (showAlert) {
+        alert(alertMessage);
+      }
     }
   };
 
