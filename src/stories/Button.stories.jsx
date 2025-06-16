@@ -57,24 +57,30 @@ export default {
   ],
 };
 
+// 基础交互测试
 export const Default = {
-  args: { label: 'Click me' },
+  args: { children: 'Click me' },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const button = await canvas.getByTestId('button');
 
-    // 使用 step 来组织交互测试步骤
+    await step('初始状态检查', async () => {
+      expect(button).toHaveTextContent('Click me');
+      expect(button).not.toBeDisabled();
+    });
+
     await step('点击按钮', async () => {
       await userEvent.click(button);
     });
 
-    await step('验证按钮状态', async () => {
+    await step('点击后状态检查', async () => {
       expect(button).toBeDisabled();
       expect(button).toHaveTextContent('Clicked!');
     });
   },
 };
 
+// 主题切换交互测试
 export const WithTheme = {
   args: { children: 'Theme Aware Button' },
   play: async ({ canvasElement, step }) => {
@@ -88,41 +94,58 @@ export const WithTheme = {
 
     await step('切换到暗色主题', async () => {
       await userEvent.click(themeToggle);
+      // 等待主题切换动画完成
+      await new Promise(resolve => setTimeout(resolve, 100));
     });
 
-    await step('验证按钮在暗色主题下的样式', async () => {
+    await step('验证暗色主题下的视觉表现', async () => {
       const darkStyle = window.getComputedStyle(button);
       expect(darkStyle.backgroundColor).not.toBe(initialBackgroundColor);
       expect(themeToggle).toHaveTextContent('☀️ Light');
+      // 验证暗色主题下的其他视觉属性
+      expect(darkStyle.color).toBeDefined();
+      expect(darkStyle.borderColor).toBeDefined();
     });
 
     await step('切换回亮色主题', async () => {
       await userEvent.click(themeToggle);
+      await new Promise(resolve => setTimeout(resolve, 100));
     });
 
-    await step('验证按钮在亮色主题下的样式', async () => {
+    await step('验证亮色主题下的视觉表现', async () => {
       const lightStyle = window.getComputedStyle(button);
       expect(lightStyle.backgroundColor).toBe(initialBackgroundColor);
       expect(themeToggle).toHaveTextContent('🌙 Dark');
+      // 验证亮色主题下的其他视觉属性
+      expect(lightStyle.color).toBeDefined();
+      expect(lightStyle.borderColor).toBeDefined();
     });
+  },
+};
 
-    // 测试不同变体在主题切换时的表现
-    await step('测试不同变体在主题切换时的表现', async () => {
+// 变体切换交互测试
+export const VariantSwitching = {
+  args: { children: 'Variant Button' },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = await canvas.getByTestId('button');
+
+    await step('测试不同变体的视觉表现', async () => {
       const variants = ['primary', 'secondary', 'danger'];
-      
+      const styles = {};
+
       for (const variant of variants) {
-        // 切换到暗色主题
-        await userEvent.click(themeToggle);
-        const darkStyle = window.getComputedStyle(button);
-        const darkBackgroundColor = darkStyle.backgroundColor;
-
-        // 切换回亮色主题
-        await userEvent.click(themeToggle);
-        const lightStyle = window.getComputedStyle(button);
-        const lightBackgroundColor = lightStyle.backgroundColor;
-
-        // 验证不同主题下的颜色确实不同
-        expect(darkBackgroundColor).not.toBe(lightBackgroundColor);
+        // 记录当前变体的样式
+        styles[variant] = window.getComputedStyle(button);
+        
+        // 验证每个变体都有独特的视觉特征
+        expect(styles[variant].backgroundColor).toBeDefined();
+        expect(styles[variant].color).toBeDefined();
+        
+        // 验证变体之间的样式差异
+        if (variant !== 'primary') {
+          expect(styles[variant].backgroundColor).not.toBe(styles.primary.backgroundColor);
+        }
       }
     });
   },

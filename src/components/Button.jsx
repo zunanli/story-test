@@ -10,46 +10,45 @@ export const Button = ({
   disabled = false 
 }) => {
   const [clicked, setClicked] = useState(false);
+  const [isRed, setIsRed] = useState(false);
   const { theme } = useTheme();
 
   const handleClick = () => {
     if (!disabled) {
       setClicked(true);
+      setIsRed(prev => !prev);
       onClick?.();
     }
   };
 
   const getVariantStyles = () => {
-    switch (variant) {
-      case 'primary':
-        return {
-          backgroundColor: theme.colors.primary[500],
-          color: theme.colors.text.primary,
-          '&:hover': {
-            backgroundColor: theme.colors.primary[600],
-          },
-        };
-      case 'secondary':
-        return {
-          backgroundColor: theme.colors.secondary[100],
-          color: theme.colors.text.primary,
-          border: `1px solid ${theme.colors.secondary[300]}`,
-          '&:hover': {
-            backgroundColor: theme.colors.secondary[200],
-            borderColor: theme.colors.secondary[400],
-          },
-        };
-      case 'danger':
-        return {
-          backgroundColor: theme.colors.danger[500],
-          color: theme.colors.text.primary,
-          '&:hover': {
-            backgroundColor: theme.colors.danger[600],
-          },
-        };
-      default:
-        return {};
-    }
+    const baseStyles = {
+      primary: {
+        backgroundColor: isRed ? theme.colors.danger[500] : theme.colors.primary[500],
+        color: theme.colors.text.primary,
+        '&:hover': {
+          backgroundColor: isRed ? theme.colors.danger[600] : theme.colors.primary[600],
+        },
+      },
+      secondary: {
+        backgroundColor: theme.colors.secondary[100],
+        color: theme.colors.text.primary,
+        border: `1px solid ${theme.colors.secondary[300]}`,
+        '&:hover': {
+          backgroundColor: theme.colors.secondary[200],
+          borderColor: theme.colors.secondary[400],
+        },
+      },
+      danger: {
+        backgroundColor: theme.colors.danger[500],
+        color: theme.colors.text.primary,
+        '&:hover': {
+          backgroundColor: theme.colors.danger[600],
+        },
+      },
+    };
+
+    return baseStyles[variant] || baseStyles.primary;
   };
 
   const getSizeStyles = () => {
@@ -102,7 +101,7 @@ export const Button = ({
   return (
     <button 
       onClick={handleClick}
-      disabled={disabled || clicked}
+      disabled={disabled}
       style={styles}
       data-testid="button"
     >
