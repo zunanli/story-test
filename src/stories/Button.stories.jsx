@@ -47,9 +47,6 @@ export default {
     showAlert: {
       control: 'boolean',
     },
-    alertMessage: {
-      control: 'text',
-    },
     onClick: { action: 'clicked' },
   },
   decorators: [
@@ -64,9 +61,10 @@ export default {
 
 export const Interactive = {
   args: {
-    label: 'Toggle Color',
+    label: 'Click Me',
     variant: 'primary',
     size: 'medium',
+    showAlert: true,
   },
   play: async ({ canvasElement, step }) => {
     const button = canvasElement.querySelector('[data-testid="button"]');
@@ -76,38 +74,7 @@ export const Interactive = {
       expect(button.style.backgroundColor).toBe('rgb(59, 130, 246)'); // #3B82F6
     });
 
-    await step('First click - changes to red', async () => {
-      // Use userEvent for more reliable click simulation
-      await userEvent.click(button);
-      // Wait for state update
-      await new Promise(resolve => setTimeout(resolve, 0));
-      // Verify color changed to red
-      expect(button.style.backgroundColor).toBe('rgb(239, 68, 68)'); // #EF4444
-    });
-
-    await step('Second click - changes back to blue', async () => {
-      // Use userEvent for more reliable click simulation
-      await userEvent.click(button);
-      // Wait for state update
-      await new Promise(resolve => setTimeout(resolve, 0));
-      // Verify color changed back to blue
-      expect(button.style.backgroundColor).toBe('rgb(59, 130, 246)'); // #3B82F6
-    });
-  },
-};
-
-export const WithAlert = {
-  args: {
-    label: 'Click for Alert',
-    variant: 'primary',
-    size: 'medium',
-    showAlert: true,
-    alertMessage: 'Hello from Button!',
-  },
-  play: async ({ canvasElement, step }) => {
-    const button = canvasElement.querySelector('[data-testid="button"]');
-    
-    await step('Click button to trigger alert', async () => {
+    await step('First click - changes to red and shows alert', async () => {
       // 创建一个变量来存储 alert 消息
       let alertMessage = null;
       
@@ -128,8 +95,14 @@ export const WithAlert = {
         // 点击按钮
         await userEvent.click(button);
         
-        // 验证 alert 被调用，并且消息正确
-        expect(alertMessage).toBe('Hello from Button!');
+        // 等待状态更新
+        await new Promise(resolve => setTimeout(resolve, 0));
+        
+        // 验证颜色变为红色
+        expect(button.style.backgroundColor).toBe('rgb(239, 68, 68)'); // #EF4444
+        
+        // 验证 alert 显示当前文本
+        expect(alertMessage).toBe('Click Me');
       } finally {
         // 恢复原始的 alert 函数
         Object.defineProperty(window, 'alert', {
@@ -137,6 +110,15 @@ export const WithAlert = {
           configurable: true
         });
       }
+    });
+
+    await step('Second click - changes back to blue', async () => {
+      // Use userEvent for more reliable click simulation
+      await userEvent.click(button);
+      // Wait for state update
+      await new Promise(resolve => setTimeout(resolve, 0));
+      // Verify color changed back to blue
+      expect(button.style.backgroundColor).toBe('rgb(59, 130, 246)'); // #3B82F6
     });
   },
 }; 

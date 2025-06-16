@@ -1,38 +1,48 @@
-import { useState } from "react";
-import { useTheme } from "../context/ThemeContext";
+import React, { useState, useContext, useEffect } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
-export const Button = ({ 
-  children,
+export const Button = ({
   label,
-  onClick, 
-  variant = 'primary', 
-  size = 'medium', 
+  variant = 'primary',
+  size = 'medium',
   disabled = false,
   showAlert = false,
-  alertMessage = 'Button clicked!'
+  alertMessage,
+  onClick,
+  ...props
 }) => {
   const [clicked, setClicked] = useState(false);
-  const [isRed, setIsRed] = useState(false);
   const { theme } = useTheme();
+  const [buttonText, setButtonText] = useState(label);
 
-  const handleClick = () => {
-    if (!disabled) {
-      setIsRed(prev => !prev);
-      setClicked(true);
-      onClick?.();
-      if (showAlert) {
-        alert(alertMessage);
-      }
+  // 监听 label 变化，更新 buttonText
+  useEffect(() => {
+    setButtonText(label);
+  }, [label]);
+
+  const handleClick = (e) => {
+    if (disabled) return;
+    
+    // 更新点击状态
+    setClicked(true);
+    setTimeout(() => setClicked(false), 200);
+
+    // 如果设置了 showAlert，显示当前的 buttonText
+    if (showAlert) {
+      window.alert(buttonText);
     }
+
+    // 调用外部传入的 onClick
+    onClick?.(e);
   };
 
   const getVariantStyles = () => {
     const baseStyles = {
       primary: {
-        backgroundColor: isRed ? theme.colors.danger[500] : theme.colors.primary[500],
+        backgroundColor: theme.colors.primary[500],
         color: theme.colors.text.primary,
         '&:hover': {
-          backgroundColor: isRed ? theme.colors.danger[600] : theme.colors.primary[600],
+          backgroundColor: theme.colors.primary[600],
         },
       },
       secondary: {
@@ -81,8 +91,6 @@ export const Button = ({
     }
   };
 
-  const buttonText = children || label || 'Button';
-
   const styles = {
     ...getVariantStyles(),
     ...getSizeStyles(),
@@ -104,11 +112,12 @@ export const Button = ({
   };
 
   return (
-    <button 
+    <button
+      data-testid="button"
+      style={styles}
       onClick={handleClick}
       disabled={disabled}
-      style={styles}
-      data-testid="button"
+      {...props}
     >
       {buttonText}
     </button>
