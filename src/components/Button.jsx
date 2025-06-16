@@ -45,25 +45,15 @@ export const Button = ({
       primary: {
         backgroundColor: isRed ? theme.colors.danger[500] : theme.colors.primary[500],
         color: theme.colors.text.primary,
-        '&:hover': {
-          backgroundColor: isRed ? theme.colors.danger[600] : theme.colors.primary[600],
-        },
       },
       secondary: {
         backgroundColor: theme.colors.secondary[100],
         color: theme.colors.text.primary,
         border: `1px solid ${theme.colors.secondary[300]}`,
-        '&:hover': {
-          backgroundColor: theme.colors.secondary[200],
-          borderColor: theme.colors.secondary[400],
-        },
       },
       danger: {
         backgroundColor: theme.colors.danger[500],
         color: theme.colors.text.primary,
-        '&:hover': {
-          backgroundColor: theme.colors.danger[600],
-        },
       },
     };
 
@@ -74,19 +64,19 @@ export const Button = ({
     switch (size) {
       case 'small':
         return {
-          padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+          padding: '0.375rem 0.75rem',
           fontSize: '0.875rem',
           borderRadius: '0.25rem',
         };
       case 'medium':
         return {
-          padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+          padding: '0.5rem 1rem',
           fontSize: '1rem',
           borderRadius: '0.375rem',
         };
       case 'large':
         return {
-          padding: `${theme.spacing.lg} ${theme.spacing.lg}`,
+          padding: '0.75rem 1.5rem',
           fontSize: '1.125rem',
           borderRadius: '0.5rem',
         };
@@ -95,7 +85,7 @@ export const Button = ({
     }
   };
 
-  const styles = {
+  const baseStyles = {
     ...getVariantStyles(),
     ...getSizeStyles(),
     fontFamily: 'system-ui, sans-serif',
@@ -103,22 +93,15 @@ export const Button = ({
     transition: 'all 0.2s',
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.5 : 1,
-    '&:hover': !disabled && {
-      transform: 'scale(1.05)',
-    },
-    '&:active': !disabled && {
-      transform: 'scale(0.95)',
-    },
-    '&:focus': {
-      outline: 'none',
-      boxShadow: `0 0 0 2px ${theme.colors.primary[500]}`,
-    },
+    transform: clicked ? 'scale(0.95)' : 'scale(1)',
+    outline: 'none',
+    border: 'none',
   };
 
   return (
     <button
       data-testid="button"
-      style={styles}
+      style={baseStyles}
       onClick={handleClick}
       disabled={disabled}
       {...props}
