@@ -1,6 +1,7 @@
 import { Button } from '../components/Button';
 import { useTheme } from '../context/ThemeContext';
 import { expect } from '@storybook/test';
+import { userEvent } from '@storybook/testing-library';
 
 const ThemeToggle = () => {
   const { mode, toggleTheme } = useTheme();
@@ -72,7 +73,10 @@ export const Interactive = {
     });
 
     await step('First click - changes to red', async () => {
-      await button.click();
+      // Use userEvent for more reliable click simulation
+      await userEvent.click(button);
+      // Wait for state update
+      await new Promise(resolve => setTimeout(resolve, 0));
       const computedStyle = window.getComputedStyle(button);
       const backgroundColor = computedStyle.backgroundColor;
       // Verify color changed to red
@@ -80,7 +84,10 @@ export const Interactive = {
     });
 
     await step('Second click - changes back to blue', async () => {
-      await button.click();
+      // Use userEvent for more reliable click simulation
+      await userEvent.click(button);
+      // Wait for state update
+      await new Promise(resolve => setTimeout(resolve, 0));
       const computedStyle = window.getComputedStyle(button);
       const backgroundColor = computedStyle.backgroundColor;
       // Verify color changed back to blue
