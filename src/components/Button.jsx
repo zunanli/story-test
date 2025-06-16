@@ -15,8 +15,8 @@ export const Button = ({
 
   const handleClick = () => {
     if (!disabled) {
-      setClicked(true);
       setIsRed(prev => !prev);
+      setClicked(true);
       onClick?.();
     }
   };

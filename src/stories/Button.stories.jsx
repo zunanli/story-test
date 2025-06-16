@@ -63,13 +63,11 @@ export const Interactive = {
     size: 'medium',
   },
   play: async ({ canvasElement, step }) => {
-    const button = canvasElement.querySelector('button');
+    const button = canvasElement.querySelector('[data-testid="button"]');
     
     await step('Initial state - blue color', async () => {
-      const computedStyle = window.getComputedStyle(button);
-      const backgroundColor = computedStyle.backgroundColor;
       // Verify initial color is blue (primary)
-      expect(backgroundColor).toBe('rgb(59, 130, 246)'); // blue-500
+      expect(button.style.backgroundColor).toBe('rgb(59, 130, 246)'); // #3B82F6
     });
 
     await step('First click - changes to red', async () => {
@@ -77,10 +75,8 @@ export const Interactive = {
       await userEvent.click(button);
       // Wait for state update
       await new Promise(resolve => setTimeout(resolve, 0));
-      const computedStyle = window.getComputedStyle(button);
-      const backgroundColor = computedStyle.backgroundColor;
       // Verify color changed to red
-      expect(backgroundColor).toBe('rgb(239, 68, 68)'); // red-500
+      expect(button.style.backgroundColor).toBe('rgb(239, 68, 68)'); // #EF4444
     });
 
     await step('Second click - changes back to blue', async () => {
@@ -88,10 +84,8 @@ export const Interactive = {
       await userEvent.click(button);
       // Wait for state update
       await new Promise(resolve => setTimeout(resolve, 0));
-      const computedStyle = window.getComputedStyle(button);
-      const backgroundColor = computedStyle.backgroundColor;
       // Verify color changed back to blue
-      expect(backgroundColor).toBe('rgb(59, 130, 246)'); // blue-500
+      expect(button.style.backgroundColor).toBe('rgb(59, 130, 246)'); // #3B82F6
     });
   },
 }; 
