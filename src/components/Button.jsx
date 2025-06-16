@@ -106,7 +106,7 @@ export const Button = ({
       style={styles}
       data-testid="button"
     >
-      {clicked ? "Clicked!" : buttonText}
+      {buttonText}
     </button>
   );
 }; 
